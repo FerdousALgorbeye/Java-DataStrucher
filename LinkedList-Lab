@@ -1,0 +1,96 @@
+public class LinkedList <T extends Comparable<T>> {
+private Node <T> head;
+
+
+
+
+
+
+public void insertathead(Node<T> data){
+if(head==null){
+head.setNext(data);
+}else{
+Node curr=new Node();
+curr.setNext(head);
+curr=head;
+}
+}
+public void Printall(Node<T> data){
+System.out.print("head-->");
+Node<T> curr=this.head;
+while(curr!= null){
+System.out.print(curr.toString() +"--->");
+curr=curr.getNext();
+Node c=new Node();
+curr.setNext(c);
+}
+System.out.print("Null|");
+}
+
+public void insertatend(T data){
+Node <T> newNode=new Node <T> (data);
+if (head ==null)
+head=newNode;
+else{
+Node<T>curr =this.head;
+while(curr.getNext() !=null)
+curr=curr.getNext();
+curr.setNext(newNode);
+}}
+public int lengthrec(Node<T> head2){
+return lengthrec(head);
+}
+
+private int lenghtrec(Node<T> nono){
+if(nono==null)
+return 0;
+return 1+lenghtrec(nono.getNext());
+}
+public int insertsorted(Node newbode){
+if (head== null|| head.getData()>= newbode.data)
+return 0;
+
+}
+
+public void insertathead(int i) {
+// TODO Auto-generated method stub
+
+}
+}
+////////////////////////////Node
+
+public class Node<T extends Comparable<T>> {
+T data;
+private Node<T> next;
+public T getData() {
+return data;
+}
+public void setData(T data) {
+this.data = data;
+}
+public Node<T> getNext() {
+return next;
+}
+public void setNext(Node<T> next) {
+this.next = next;
+}
+public Node(T data, Node<T> next) {
+super();
+this.data = data;
+this.next = next;
+}
+public Node() {
+// TODO Auto-generated constructor stub
+}
+public Node(T data2) {
+// TODO Auto-generated constructor stub
+}
+@Override
+public String toString() {
+return data.toString();
+}
+
+ 
+
+
+}
