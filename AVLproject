@@ -1,0 +1,1365 @@
+# Java-DataStrucher
+package application;
+
+public class LinkedNode<T extends Comparable<T>> {
+
+    private LinkedNode<T> next;
+    private T data;
+
+    public LinkedNode(T data) {
+        super();
+        this.data = data;
+    }
+
+    public LinkedNode<T> getNext() {
+        return next;
+    }
+
+    public void setNext(LinkedNode<T> next) {
+        this.next = next;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+}
+///////////////////////////////
+package application;
+
+public class AVLTree<T extends Comparable<T>>  {
+    AVLNode root;
+    String  Result = "" ;
+
+    AVLTree() {
+        root = null;
+    }
+
+    public void insert(T data) {
+        root = insert(root,data);
+    }
+    private AVLNode insert(AVLNode node, T data) {
+        if (node == null)
+        {
+            node = new AVLNode(data);
+        }
+        else {
+            if (data.compareTo((T) node.data) < 0) {
+                node.leftRoot = insert(node.leftRoot, data);
+                if (height(node.leftRoot) - height(node.rightRoot) == 2) {
+                    if (data.compareTo((T) node.leftRoot.data) < 0)
+                        node = rotateLeft(node);
+                    else
+                        node = doubleLeft(node);
+                }
+            }
+            else if (data.compareTo((T) node.data) > 0) {
+                node.rightRoot = insert(node.rightRoot, data);
+                if (height(node.rightRoot) - height(node.leftRoot) == 2)
+                    if (data.compareTo((T) node.rightRoot.data) > 0)
+                        node = rotateRight(node);
+                    else
+                        node = doubleRight(node);
+            } else {
+                // node.length = Math.max(height(node.leftRoot), height(node.rightRoot)) + 1;
+
+                return node;
+            }
+        }
+        node.length = Math.max(height(node.leftRoot), height(node.rightRoot)) + 1;
+        if(node.counter == 0)
+        {
+            node.counter = 1 ;
+        }
+        return node;
+    }
+
+    public boolean isEmpty() {
+        if (root == null)
+            return true;
+        return false;
+    }
+
+    private int height(AVLNode t) {
+        if (t == null)
+            return -1;
+        else
+            return t.length;
+    }
+
+    public int Max(int a, int b)
+    {
+        if(a > b)
+            return a ;
+        return b;
+    }
+
+    public int getBalance(AVLNode node)
+    {
+        if (node == null)
+            return 0;
+        return height(node.leftRoot) - height(node.rightRoot) ;
+    }
+
+    public AVLNode MinNode(AVLNode node)
+    {
+        AVLNode current = node;
+
+        while (current.leftRoot != null)
+            current = current.leftRoot;
+
+        return current;
+    }
+
+    private AVLNode rotateLeft(AVLNode temp) {
+        AVLNode node = temp.leftRoot;
+        temp.leftRoot = node.rightRoot;
+        node.rightRoot = temp;
+        temp.length = Math.max(height(temp.leftRoot), height(temp.rightRoot)) + 1;
+        node.length = Math.max(height(node.leftRoot), temp.length) + 1;
+        return node;
+    }
+
+    private AVLNode rotateRight(AVLNode temp) {
+        AVLNode node = temp.rightRoot;
+        temp.rightRoot = node.leftRoot;
+        node.leftRoot = temp;
+        temp.length = Math.max(height(temp.leftRoot), height(temp.rightRoot)) + 1;
+        node.length = Math.max(height(node.rightRoot), temp.length) + 1;
+        return node;
+    }
+
+    private AVLNode doubleLeft(AVLNode temp) {
+        temp.leftRoot = rotateRight(temp.leftRoot);
+        return rotateLeft(temp);
+    }
+
+    private AVLNode doubleRight(AVLNode temp) {
+        temp.rightRoot = rotateLeft(temp.rightRoot);
+        return rotateRight(temp);
+    }
+
+
+
+
+    public boolean Delete(int data)
+    {
+        if(searchName(data))
+        {
+            Delete(root,data).getData();
+            return true;
+        }
+        return false ;
+    }
+
+    private AVLNode Delete (AVLNode<Integer> root,int data) {
+        {
+            if (root == null)
+                return null;
+
+            if (data < (root.getData()))
+                root.leftRoot = Delete(root.leftRoot, data);
+
+            else if (data > (root.getData()))
+                root.rightRoot = Delete(root.rightRoot, data);
+
+            else
+            {
+                if ((root.leftRoot == null) || (root.rightRoot == null))
+                {
+                    AVLNode temp = null;
+                    if (temp == root.leftRoot)
+                        temp = root.rightRoot;
+                    else
+                        temp = root.leftRoot;
+
+                    if (temp == null)
+                    {
+                        temp = root ;
+                        root = null ;
+                    }
+                    else
+                        root = temp ;
+                }
+                else
+                {
+                    AVLNode<Integer> temp = MinNode(root.rightRoot);
+                    root.data = temp.data;
+                    root.rightRoot = Delete(root.rightRoot, (temp.getData()));
+                }
+            }
+        }
+        if (root == null)
+            return root;
+
+        root.length = Max(height(root.leftRoot), height(root.rightRoot)) + 1;
+
+
+        int balance = getBalance(root);
+
+        if (balance > 1 && getBalance(root.leftRoot) <= 0)
+            return rotateRight(root);
+        if (balance > 1 && getBalance(root.leftRoot) > 0)
+        {
+            root.leftRoot = rotateLeft(root.leftRoot);
+            return rotateRight(root);
+        }
+
+        if (balance < -1 && getBalance(root.rightRoot) >= 0)
+            return rotateLeft(root);
+
+        if (balance < -1 && getBalance(root.rightRoot) < 0)
+        {
+            root.rightRoot = rotateRight(root.rightRoot);
+            return rotateLeft(root);
+        }
+        return root;
+    }
+
+    public  int Find(AVLNode<Student> node,int number) {
+        if(node != null)
+        {
+            for (int i = 0; i < node.c.getSize(); i++) {
+                if (number == ((Student) node.c.get(i)).getIdNumber()) {
+                    return i + 1 ;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public boolean searchName(int x)
+    {
+        return searchName( x, root );
+    }
+
+    private boolean searchName(int x , AVLNode<Integer> node)
+    {
+        while (node != null) {
+            if (x < (node.getData()))
+                node = node.leftRoot;
+            else if (x > (node.getData()))
+                node = node.rightRoot;
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public AVLNode searchNodeName(int x)
+    {
+        return searchNodeName(x, root );
+    }
+
+    private AVLNode searchNodeName(int x , AVLNode<Integer> node)
+    {
+        while (node != null) {
+            if (x < (node.getData()))
+                node = node.leftRoot;
+            else if (x > (node.getData()))
+                node = node.rightRoot;
+            else
+            {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public boolean FindDoubleNodeB(double x)
+    {
+        return FindDoubleNodeB( x, root );
+    }
+
+    private boolean FindDoubleNodeB(double x , AVLNode<Double> node)
+    {
+        while (node != null) {
+            if (x >  node.getData())
+                node = node.leftRoot;
+            else if (x <  node.data)
+                node = node.rightRoot;
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public AVLNode FindDoubleNode(double x)
+    {
+        return FindDoubleNode( x, root );
+    }
+
+    private AVLNode FindDoubleNode(double x , AVLNode<Double> node)
+    {
+        while (node != null) {
+            if (x < node.data)
+                node = node.leftRoot;
+            else if (x > node.data)
+                node = node.rightRoot;
+            else
+            {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public String displayIDTree() {
+        Result = "";
+        if (isEmpty())
+            return "Empty tree";
+
+        return displayIDTree(root);
+    }
+
+    private String displayIDTree(AVLNode temp) // inorder traversal
+    {
+        if (temp != null) {
+            displayIDTree(temp.leftRoot);
+            Result += temp.data + " (" + height(temp) + ")" + "\n";
+            displayIDTree(temp.rightRoot);
+        }
+        return Result ;
+    }
+
+    public String displayGradeTree() {
+        Result = "";
+        if (isEmpty())
+            return "Empty tree";
+
+        return displayGradeTree(root);
+    }
+
+    private String displayGradeTree(AVLNode temp) // inorder traversal
+    {
+        if (temp != null) {
+            displayGradeTree(temp.leftRoot);
+            Result += temp.data + " " + temp.c.display() + " (" + height(temp) + ")" + "\n";
+            displayGradeTree(temp.rightRoot);
+        }
+        return Result ;
+    }
+
+
+}
+/////////////////////////////
+package application;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.awt.Font;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.Scanner;
+
+
+public class Main extends Application {
+
+    static File f ;
+    static DoubleLinkedList<Student> doubleLinkedList = new DoubleLinkedList<>() ;
+    static AVLTree<Integer> idNumber = new AVLTree<>() ;
+    static AVLTree<Double> Grade = new AVLTree<>() ;
+    static String branchComb = "" ;
+    static String branch = "";
+
+
+    public void start(Stage stage) throws IOException {
+
+        stage.setScene(Main.ReadScene(stage));
+        stage.show();
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        launch();
+        PrintWriter printWriter = new PrintWriter(f);
+        printWriter.print(doubleLinkedList.display1() + branch);
+        printWriter.close();
+    }
+
+    public static Scene ReadScene(Stage stage)
+    {
+        Group group = new Group();
+        VBox vBox = new VBox(30);
+        HBox hBox = new HBox(25);
+        Label label = new Label("Branch");
+        GridPane toggleGroup = new GridPane();
+        CheckBox radioButton = new CheckBox("Lit");
+        CheckBox radioButton1 = new CheckBox("Sci");
+
+        toggleGroup.getChildren().addAll(radioButton,radioButton1);
+
+        hBox.getChildren().addAll(label,radioButton,radioButton1);
+       /* radioButton.setTranslateX(250);
+        radioButton.setPrefWidth(100);
+        radioButton.setTranslateY(120);
+        radioButton1.setTranslateX(120);
+        radioButton1.setTranslateY(120);*/
+
+        Button read = new Button("Read");
+
+        read.setPrefSize(200,40);
+        read.setStyle("-fx-base: BROWN;");
+    //    read.setFocused(new Font("Arabic Typesetting", 15));
+
+        read.setOnAction(e->{
+
+            if(radioButton.isSelected())
+                branchComb = "Lit";
+            else
+                branchComb = "Sci";
+            try {
+                Read(stage);
+                stage.setScene(Main.Menu(stage));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        vBox.getChildren().addAll(hBox,read);
+        vBox.setPadding(new Insets(30));
+        group.getChildren().addAll(vBox);
+
+        Scene scene = new Scene(group);
+
+
+        return scene;
+
+    }
+
+    public static Scene Menu(Stage stage) {
+
+        Group group =new Group();
+        VBox vBox2 = new VBox(10);
+
+        Button displayDoubleLinkedList = new Button("Display Double Linked List");
+        displayDoubleLinkedList.setPrefSize(250,20);
+        displayDoubleLinkedList.setStyle("-fx-base: BROWN;");
+        displayDoubleLinkedList.setOnAction(e->{
+            stage.setScene(Main.PrintDoubleLinkedList(stage));
+        });
+
+        Button add = new Button("Add Student");
+        add.setPrefSize(250,20);
+        add.setStyle("-fx-base: BROWN;");
+
+        add.setOnAction(e->{
+            stage.setScene(Main.AddChild(stage));
+        });
+
+        Button delete = new Button("Delete Student");
+        delete.setPrefSize(250,20);
+        delete.setStyle("-fx-base: BROWN;");
+
+        delete.setOnAction(e->{
+            stage.setScene(Main.DeleteChild(stage));
+        });
+        HBox hBox = new HBox(20);
+        hBox.getChildren().addAll(displayDoubleLinkedList,add);
+        Button search = new Button("SEARCH");
+        search.setStyle("-fx-base: BROWN;");
+
+        search.setPrefSize(250,20);
+        search.setOnAction(e->{
+            stage.setScene(Main.SearchChild(stage));
+        });
+
+        Button update = new Button("Update");
+        update.setPrefSize(250,20);
+        update.setStyle("-fx-base: BROWN;");
+
+        update.setOnAction(e->{
+            stage.setScene(Main.UpdateChild(stage));
+        });
+
+        HBox hBox1 = new HBox(20);
+        hBox1.getChildren().addAll(delete,search);
+
+        Button height = new Button("Height");
+        height.setPrefSize(250,20);
+        height.setStyle("-fx-base: BROWN;");
+
+        height.setOnAction(e->{
+            stage.setScene(Main.Height(stage));
+        });
+
+        Button Tree1 = new Button("Display Tree1");
+        Tree1.setStyle("-fx-base: BROWN;");
+
+        Tree1.setPrefSize(250,20);
+        Tree1.setOnAction(e->{
+            stage.setScene(Main.PrintIDTree(stage));
+        });
+        HBox hBox2 = new HBox(20);
+        hBox2.getChildren().addAll(update,height);
+
+        Button Tree2 = new Button("Display Tree2");
+        Tree2.setPrefSize(250,20);
+        Tree2.setStyle("-fx-base: BROWN;");
+
+        Tree2.setOnAction(e->{
+            stage.setScene(Main.PrintGradeTree(stage));
+        });
+
+        Button allStudent = new Button("AllStudent");
+        allStudent.setPrefSize(250,20);
+        allStudent.setStyle("-fx-base: BROWN;");
+
+        allStudent.setOnAction(e->{
+            stage.setScene(Main.PrintChild(stage));
+        });
+        HBox hBox3 = new HBox(20);
+        hBox3.getChildren().addAll(Tree1,Tree2);
+        Button exit = new Button("Exit");
+        exit.setStyle("-fx-base: BROWN;");
+
+        exit.setPrefSize(250,20);
+        exit.setOnAction(e->{
+            Platform.exit();
+        });
+
+        HBox hBox4 = new HBox(20);
+        hBox4.getChildren().addAll(allStudent,exit);
+
+        VBox vBox = new VBox(15);
+        vBox.setPadding(new Insets(10));
+        vBox.getChildren().addAll(hBox,hBox1,hBox2,hBox3,hBox4);
+        vBox2.getChildren().addAll(vBox);
+        vBox2.setPadding(new Insets(15));
+        group.getChildren().add(vBox2);
+
+        return new Scene(group);
+    }
+
+    public static Scene PrintDoubleLinkedList(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        TextArea textArea = new TextArea();
+
+        textArea.setPrefWidth(400);
+        textArea.setPrefHeight(220);
+        textArea.setEditable(false);
+
+        HBox h = new HBox(20);
+        Button b = new Button("Display");
+        Button b1 = new Button("Back");
+
+
+        b.setOnAction(e->{
+            textArea.setText(doubleLinkedList.display());
+        });
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll( textArea, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+
+        return scene;
+    }
+
+    public static Scene AddChild(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+
+        HBox hBox = new HBox(20 );
+        Label label = new Label("Add IDNumber Student");
+        TextField textField = new TextField();
+        hBox.getChildren().addAll(label,textField);
+
+        HBox hBox1 = new HBox(30 );
+        Label label1 = new Label("Add Branch Student");
+        TextField textField1 = new TextField();
+        hBox1.getChildren().addAll(label1,textField1);
+        textField1.setDisable(true);
+        textField1.setText(branchComb);
+
+
+        HBox hBox2 = new HBox(25 );
+        Label label2 = new Label("Add Grade Student");
+        TextField textField2 = new TextField();
+        hBox2.getChildren().addAll(label2,textField2);
+
+
+        HBox h = new HBox(20);
+        Button b = new Button("Add");
+        Button b1 = new Button("Back");
+
+        b.setOnAction(e->{
+            String id = textField.getText();
+            String branchComb = textField1.getText() ;
+            String grade = textField2.getText();
+
+            Student student = new Student(Integer.parseInt(id),branchComb,Double.parseDouble(grade));
+
+            doubleLinkedList.insert(student);
+            idNumber.insert(Integer.parseInt(id));
+            if(Grade.FindDoubleNodeB(Double.parseDouble(grade)))
+            {
+               AVLNode<Double> avlNode = Grade.FindDoubleNode(Double.parseDouble(grade));
+               avlNode.c.insert(student);
+            }
+            else
+            {
+                Grade.insert(Double.valueOf(grade));
+                AVLNode<Double> avlNode = Grade.FindDoubleNode(Double.parseDouble(grade));
+                avlNode.c.insert(student);
+            }
+            AVLNode<Double> node = Grade.FindDoubleNode(Double.parseDouble(textField2.getText()));
+            AVLNode<Integer> node1 = idNumber.searchNodeName(Integer.parseInt(textField.getText()));
+            doubleLinkedList.get1(doubleLinkedList.size-1).curr = node1 ;
+            doubleLinkedList.get1(doubleLinkedList.size-1).curr1 = node ;
+        });
+
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll(hBox,hBox1,hBox2, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+        return scene;
+    }
+
+    public static Scene DeleteChild(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        HBox hBox = new HBox(20 );
+        Label label = new Label("Add IDNumber Student");
+        TextField textField = new TextField();
+        hBox.getChildren().addAll(label,textField);
+
+        HBox hBox1 = new HBox(30 );
+        Label label1 = new Label("Add branchComb Student");
+        TextField textField1 = new TextField();
+        hBox1.getChildren().addAll(label1,textField1);
+
+        HBox hBox2 = new HBox(25 );
+        Label label2 = new Label("Add Grade Student");
+        TextField textField2 = new TextField();
+        hBox2.getChildren().addAll(label2,textField2);
+
+
+        textField1.setDisable(true);
+        textField2.setDisable(true);
+
+
+        HBox h = new HBox(20);
+        Button b = new Button("Delete");
+        Button b2 = new Button("Search");
+        Button b1 = new Button("Back");
+
+        b.setDisable(true);
+        b.setOnAction(e->{
+            Node<Student> node = doubleLinkedList.get1(finds(Integer.parseInt(textField.getText()))) ;
+            int x = finds1(node.curr1.c,Integer.parseInt(textField.getText()));
+           if(node.curr1.c != null)
+           {
+               node.curr1.c.remove(x);
+           }
+           doubleLinkedList.deleteAtPos(finds(Integer.parseInt(textField.getText()))+1);
+           idNumber.Delete(Integer.parseInt(textField.getText()));
+        });
+
+        b2.setOnAction(e->{
+            int number = finds(Integer.parseInt(textField.getText()));
+            if(number != -1)
+            {
+                textField1.setText(doubleLinkedList.get(number).getBranch());
+                textField2.setText(""+doubleLinkedList.get(number).getAverage());
+                b.setDisable(false);
+            }
+        });
+
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b2.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b,b2, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll(hBox,hBox1,hBox2, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+        return scene;
+    }
+
+    public static Scene SearchChild(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        HBox hBox = new HBox(20 );
+        Label label = new Label("Add IDNumber Student");
+        TextField textField = new TextField();
+        hBox.getChildren().addAll(label,textField);
+
+        HBox hBox1 = new HBox(30 );
+        Label label1 = new Label("Add branchComb Student");
+        TextField textField1 = new TextField();
+        hBox1.getChildren().addAll(label1,textField1);
+
+        HBox hBox2 = new HBox(25 );
+        Label label2 = new Label("Add Grade Student");
+        TextField textField2 = new TextField();
+        hBox2.getChildren().addAll(label2,textField2);
+
+
+        textField1.setDisable(true);
+        textField2.setDisable(true);
+
+
+        HBox h = new HBox(20);
+        Button b = new Button("Search");
+        Button b1 = new Button("Back");
+
+
+        b.setOnAction(e->{
+            int number = finds(Integer.parseInt(textField.getText()));
+            if(number != -1)
+            {
+                textField1.setText(doubleLinkedList.get(number).getBranch());
+                textField2.setText(""+doubleLinkedList.get(number).getAverage());
+            }
+        });
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll( hBox,hBox1,hBox2, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+        return scene;
+    }
+
+    public static Scene UpdateChild(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        HBox hBox = new HBox(20 );
+        Label label = new Label("Add IDNumber Student");
+        TextField textField = new TextField();
+        hBox.getChildren().addAll(label,textField);
+
+        HBox hBox1 = new HBox(30 );
+        Label label1 = new Label("Add branchComb Student");
+        TextField textField1 = new TextField();
+        hBox1.getChildren().addAll(label1,textField1);
+
+        HBox hBox2 = new HBox(25 );
+        Label label2 = new Label("Add Grade Student");
+        TextField textField2 = new TextField();
+        hBox2.getChildren().addAll(label2,textField2);
+
+        HBox h = new HBox(20);
+        Button b = new Button("Search");
+        Button b2 = new Button("Update");
+        Button b1 = new Button("Back");
+
+
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setOnAction(e->{
+            int number = finds(Integer.parseInt(textField.getText()));
+            if(number != -1)
+            {
+                textField1.setText(doubleLinkedList.get(number).getBranch());
+                textField2.setText(String.valueOf(doubleLinkedList.get(number).getAverage()));
+            }
+        });
+
+        b2.setOnAction(e->{
+
+            if(textField.getText().equals("") || textField1.getText().equals("") || textField2.getText().equals(""))
+            {
+                if(textField.getText().equals(""))
+                    textField.setText("error");
+                if(textField1.getText().equals(""))
+                    textField1.setText("error");
+                if(textField2.getText().equals(""))
+                    textField2.setText("error");
+            }
+            else
+            {
+                int x = finds(Integer.parseInt(textField.getText())) ;
+                if(x != -1)
+                {
+                    doubleLinkedList.get(x-1).setIdNumber(Integer.parseInt(textField.getText()));
+                    doubleLinkedList.get(x-1).setAverage(Double.parseDouble(textField2.getText()));
+                    doubleLinkedList.get(x-1).setBranch(textField1.getText());
+
+
+                    double a = Double.parseDouble(textField2.getText());
+                    int number = Grade.Find(Grade.FindDoubleNode(a),Integer.parseInt(textField.getText()));
+                    AVLNode node = Grade.FindDoubleNode(Double.parseDouble(textField2.getText())) ;
+                    if(node != null)
+                    {
+                        ((Student)node.c.get(number)).setIdNumber(Integer.parseInt(textField.getText()));
+                        ((Student)node.c.get(number)).setAverage(Double.parseDouble(textField2.getText()));
+                        ((Student)node.c.get(number)).setBranch((textField1.getText()));
+                    }
+
+
+                }
+            }
+
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+
+        h.getChildren().addAll(b,b2, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll( hBox,hBox1,hBox2, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+     
+        Scene scene = new Scene(group);
+        return scene;
+    }
+
+    public static Scene Height(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        TextArea textArea = new TextArea();
+
+        textArea.setPrefWidth(400);
+        textArea.setPrefHeight(220);
+        textArea.setEditable(false);
+
+        HBox h = new HBox(20);
+        Button b = new Button("Display");
+        Button b1 = new Button("Back");
+
+        b.setOnAction(e->{
+            textArea.setText("Grade AVLTree -- > " + Grade.root.length + "\nSeatNumber AVLTree --> " + idNumber.root.length);
+        });
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll( textArea, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+
+        return scene;
+    }
+
+    public static Scene PrintIDTree(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        
+
+        TextArea textArea = new TextArea();
+
+        textArea.setPrefWidth(400);
+        textArea.setPrefHeight(220);
+        textArea.setEditable(false);
+
+        HBox h = new HBox(20);
+        Button b = new Button("Display");
+        Button b1 = new Button("Back");
+
+        b.setOnAction(e->{
+            textArea.setText(idNumber.displayIDTree());
+        });
+
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll( textArea, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+
+        return scene;
+    }
+
+    public static Scene PrintGradeTree(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+        
+
+        TextArea textArea = new TextArea();
+
+        textArea.setPrefWidth(400);
+        textArea.setPrefHeight(220);
+        textArea.setEditable(false);
+
+        HBox h = new HBox(20);
+        Button b = new Button("Display");
+        Button b1 = new Button("Back");
+
+
+        b.setOnAction(e->{
+            textArea.setText(Grade.displayGradeTree());
+        });
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll( textArea, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+
+        return scene;
+    }
+
+    public static Scene PrintChild(Stage stage) {
+        Group group = new Group();
+        VBox v = new VBox(25);
+
+        Label label = new Label("Enter grade");
+        label.setPrefWidth(100);
+        label.setPrefHeight(20);
+        TextField textField = new TextField();
+        textField.setPrefWidth(100);
+        textField.setPrefHeight(20);
+        HBox hBox = new HBox(15);
+        hBox.getChildren().addAll(label,textField);
+
+        TextArea textArea = new TextArea();
+
+        textArea.setPrefWidth(400);
+        textArea.setPrefHeight(220);
+        textArea.setEditable(false);
+
+        HBox h = new HBox(20);
+        Button b = new Button("Display");
+        Button b1 = new Button("Back");
+
+
+        b.setOnAction(e->{
+           AVLNode<Double> node = Grade.FindDoubleNode(Double.parseDouble(textField.getText()));
+           textArea.setText(node.c.display());
+        });
+
+        b1.setOnAction(e->{
+            stage.setScene(Main.Menu(stage));
+        });
+
+
+
+        b.setPrefSize(80, 20);
+        b1.setPrefSize(80, 20);
+
+
+        h.getChildren().addAll(b, b1);
+
+
+        v.setPadding(new Insets(20));
+        v.getChildren().addAll(hBox, textArea, h);
+
+        group.getChildren().add(v);
+
+        stage.setY(250);
+        stage.setX(500);
+        stage.setWidth(450);
+        stage.setHeight(400);
+
+        Scene scene = new Scene(group);
+
+        return scene;
+    }
+
+    public static void ReadFile(Stage stage) {
+        FileChooser fChooser = new FileChooser();
+        f = fChooser.showOpenDialog(stage);
+
+    }
+
+    public static boolean Read(Stage stage) throws IOException {
+
+        ReadFile(stage);
+        try {
+            Scanner in = new Scanner(f);
+            while (in.hasNextLine())
+            {
+                String name = in.nextLine() ;
+                String x[] = name.split(",");
+                if(x[1].toLowerCase().contains(branchComb.toLowerCase().trim()))
+                {
+                    doubleLinkedList.insert(new Student(Integer.parseInt(x[0]),x[1],Double.parseDouble(x[2])));
+                    idNumber.insert(Integer.parseInt(x[0]));
+                    Grade.insert(Double.parseDouble(x[2]));
+
+                    AVLNode<Double> node = Grade.FindDoubleNode(Double.parseDouble(x[2]));
+                    node.c.insert(doubleLinkedList.get(doubleLinkedList.size-1));
+                    AVLNode<Integer> node1 = idNumber.searchNodeName(Integer.parseInt(x[0]));
+                    doubleLinkedList.get1(doubleLinkedList.size-1).curr = node1 ;
+                    node.c.get(node.c.getSize()-1);
+                    doubleLinkedList.get1(doubleLinkedList.size-1).curr1 = node ;
+                }
+                else
+                {
+                    branch += name +"\n";
+                }
+            }
+
+            return true;
+        } catch (Exception E){
+            return false ;
+        }
+    }
+
+    public static int finds(int number) {
+        for (int i = 0; i < doubleLinkedList.getSize(); i++) {
+            if (number == doubleLinkedList.get(i).getIdNumber()) {
+                return i ;
+            }
+        }
+        return -1;
+    }
+
+    public static int finds1(LinkedList<Student> c ,int number) {
+        for (int i = 0; i < c.getSize(); i++) {
+            if (number == c.get(i).getIdNumber()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+//////////////////////
+package application;
+
+public class Node<T extends Comparable<T>> {
+
+    private Node<T> next , prev;
+    public AVLNode<Integer> curr ;
+    public AVLNode<Double> curr1 ;
+    private T data;
+
+    public Node(T data , Node next , Node prev) {
+        super();
+        this.data = data;
+        this.next = next ;
+        this.prev = prev ;
+    }
+
+
+    public Node<T> getNext() {
+        return next;
+    }
+
+    public void setNext(Node<T> next) {
+        this.next = next;
+    }
+    public Node<T> getPrev() {
+        return prev;
+    }
+
+    public void setPrev(Node<T> prev) {
+        this.prev = prev;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+}
+///////////////////
+package application;
+
+public class Student implements Comparable<Student> {
+    private int idNumber ;
+    private  String branch ;
+    private double average ;
+
+    Student(int idNumber , String branch , double average)
+    {
+        this.idNumber = idNumber ;
+        this.branch = branch ;
+        this.average = average ;
+    }
+
+
+    public int getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(int idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public double getAverage() {
+        return average;
+    }
+
+    public void setAverage(double average) {
+        this.average = average;
+    }
+
+
+    @Override
+    public String toString() {
+        return  idNumber + "," + branch + "," + average + " ";
+    }
+
+
+
+    @Override
+    public int compareTo(Student o) {
+        if(this.idNumber > o.idNumber)
+            return 1 ;
+        else if(this.idNumber < o.idNumber)
+            return -1 ;
+        return 0;
+    }
+}
+////////////////////////////
+package application;
+
+public class Student implements Comparable<Student> {
+    private int idNumber ;
+    private  String branch ;
+    private double average ;
+
+    Student(int idNumber , String branch , double average)
+    {
+        this.idNumber = idNumber ;
+        this.branch = branch ;
+        this.average = average ;
+    }
+
+
+    public int getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(int idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public double getAverage() {
+        return average;
+    }
+
+    public void setAverage(double average) {
+        this.average = average;
+    }
+
+
+    @Override
+    public String toString() {
+        return  idNumber + "," + branch + "," + average + " ";
+    }
+
+
+
+    @Override
+    public int compareTo(Student o) {
+        if(this.idNumber > o.idNumber)
+            return 1 ;
+        else if(this.idNumber < o.idNumber)
+            return -1 ;
+        return 0;
+    }
+}
+//////////////////////////////////////////
+package application;
+public class AVLNode<T extends Comparable<T>>  {
+    T data ;
+    LinkedList c = new LinkedList();
+    AVLNode leftRoot , rightRoot;
+    int length ;
+    int counter = 0 ;
+    AVLNode()
+    {
+
+    }
+    AVLNode(T data)
+    {
+        this.data = data ;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public AVLNode getLeftRoot() {
+        return leftRoot;
+    }
+
+    public void setLeftRoot(AVLNode leftRoot) {
+        this.leftRoot = leftRoot;
+    }
+
+    public AVLNode getRightRoot() {
+        return rightRoot;
+    }
+
+    public void setRightRoot(AVLNode rightRoot) {
+        this.rightRoot = rightRoot;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+
+}
