@@ -89,6 +89,35 @@ public Node(T data2) {
 public String toString() {
 return data.toString();
 }
+///////////////////////////////////////////////////////
+
+public class testdelet<T> {
+	public class LinkedList <T extends Comparable<T>> {
+		private Node <T> head;
+}
+	public Object delet (Node Curr,T Value) {
+		if (Curr!=null) {
+			if(Curr.Value != Value) {
+				return delet(Curr.next,Value);
+			}if(Curr.prev==null||Curr.next==null) {
+	               		Object head = null;
+			}else if (Curr.prev==null) {
+				Curr.next.prev=null;
+				Node head = Curr.next;
+			}else if (Curr.next==null) {
+				Curr.prev.next=null;
+				
+			}else 
+				Curr.next.prev=Curr.prev;
+				Curr.prev.next=Curr.next;
+				
+		}
+		return null;
+	}
+	
+	
+	
+	}
 
  
 
