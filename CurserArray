@@ -12,3 +12,185 @@ public class CNode<T extends Comparable<T>> {
 	 public void setNext(int next) { this.next = next; }
 	 public String toString() { return "["+ data+ " , " + next + "]"; }
 	}
+package curserarry;
+
+public class curserarray <T extends Comparable<T>> {
+     CNode <T>[] curserarray;
+	public curserarray(int i) {
+		curserarray=new CNode[i];
+		initialization();
+		}
+
+	public int initialization(){
+		 CNode[] curserarray = null;
+		for(int i=0;i<curserarray.length-1;i++)
+			 curserarray[i] = new CNode(i+1);
+
+		 return 0;
+		}
+
+	 public int createList(){
+    		 int l = malloc();
+    		 int l1 = malloc();
+			if(l!=0)
+    		 System.out.println("Error: Out of space!!!");
+    		 else
+    			 curserarray[l] = new CNode("-");
+    		 return l;
+    		}
+	 public void traversList(int l) {
+		 System.out.print("list_"+l+"-->");
+		 while(!isNull(l) && !isEmpty(l)){
+		l=curserarray[l].next;
+		 System.out.print(curserarray[l]+"-->");
+		 }
+		 System.out.println("null");
+		}
+
+
+	public void insertAtHead(T data, int l){
+		 if(isNull(l)) // list not created
+		 return;
+		 int p = malloc();
+		 if(p!=0){
+			 CNode[] ca = null;
+			ca[p] = new CNode(data );
+			 ca[l].next = p;
+		 }
+		 else
+		 System.out.println("Error: Out of space!!!");
+		}
+
+	public int malloc() {
+		int p = curserarray[0].next;
+    	  curserarray[0].next = curserarray[p].next;
+    	  return p;
+    	 }
+	 public void free(int p){
+   	  CNode[] ca = null;
+		ca[p] = new CNode(null);
+   	  ca[0].next = p;
+   	 }
+     public boolean isNull(int l){
+   	  return curserarray[l]==null;
+   	 }
+   	 public boolean isEmpty(int l){
+   	  return curserarray[l].next == 0;
+   	 }
+   	 public boolean isLast(int p){
+
+	return curserarray[p].next == 0;
+   	 }
+   	public void insertAtENd(T data, int l){
+		if(isNull(0))
+			return;
+		int p=malloc();
+		if(p==0)
+			while(curserarray[l].next!=0){
+				l=curserarray[l].next;
+				curserarray[l].next=p;
+				curserarray[p]=new CNode(data,0);
+			}
+			System.out.print("outtt offf stack");
+
+	}
+    int findprev(T data,int l){
+    	while(!isNull(l)||!isEmpty(l))
+    		if(curserarray[curserarray[l].next].data==data)
+    			return l;
+    	return l=curserarray[l].next;
+
+    }
+     Comparable<T> delet(T data ,int l){
+    	 int p=findprev(data,1);
+    	 if(p!=-1){
+    		  int x=curserarray[p].next;
+                  T temp=(T) curserarray[p].data;
+                  curserarray[p].next=curserarray[x].next;
+                  free(l);
+
+		return temp;
+    	 }
+		return data;
+     }
+        T insertSort(T data, int l){
+        	if(isNull(0))
+    			return null   ;
+    		int p=malloc();
+    		if(p==0)
+    			while(curserarray[l].next!=0){
+    				l=curserarray[l].next;
+    				curserarray[l].next=p;
+    				curserarray[p]=new CNode(data,0);
+    			}
+    			System.out.print("outtt offf stack");
+				return data;
+
+    	}
+			
+
+        
+
+     int count(int l){
+    	 int count=0;
+    	 if(isNull(l))
+    		 return 0;
+    	 while (curserarray[l].next!=0){
+    		 l=curserarray[l].next;
+
+    	 }
+		return count;
+     }
+   public T deletATTail(int l){
+	   int p=l;
+	   while (!isNull(l) && !isEmpty(l)){
+		   p=l;
+		   l=(int) curserarray[l].data;
+
+	   }
+	   if (l==p)
+		   return null;
+	   T temp =curserarray[l].data;
+	   curserarray[p].next=0;
+	   free(l);
+	   return temp;
+
+   }
+       public Boolean subsite (int l,int l1){
+    	   while(isEmpty(l1)&&isEmpty(l))
+    		    System.out.print("isss empty");
+
+    	T p1=  curserarray[l].;
+    	T p2=  curserarray[l1].next.data;
+    	
+    	if(p1.equals(p2)){
+    		System.out.print(true);
+    	}else {
+    		
+    		System.out.print(false);
+    	}
+		return null;
+
+
+}
+
+       }
+
+
+
+
+package curserarry;
+
+public class main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		curserarray<String> ca=new curserarray<String>(23);
+		int lateList=ca.createList();
+		ca.insertAtHead("FERDOUS",lateList);
+		ca.insertAtHead("Mahmoud",lateList);
+		ca.traversList(lateList);
+
+	}
+
+}
