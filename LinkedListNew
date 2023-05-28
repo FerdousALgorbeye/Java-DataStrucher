@@ -1,1 +1,180 @@
+import java.util.Random;
 
+public class LinkedList<T extends Comparable<T>> {
+	private Node<T> head;
+
+	public Node<T> getHead() {
+		return head;
+	}
+
+	public void setHead(Node<T> head) {
+		this.head = head;
+	}
+
+	public void Sortedinsert(T data) {
+		Node<T> newNode = new Node(data);
+		if (head == null)
+			head = newNode;
+		else {
+			Node<T> previous = head;
+			Node<T> current = head;
+
+			while (current.getData().compareTo(newNode.getData()) < 0) {
+				previous = current;
+				current = previous;
+			}
+
+			if (current == head) {
+				newNode.setNext(head);
+				head = newNode;
+
+			} else if (current == null)
+				previous.setNext(newNode);
+			else {
+				newNode.setNext(current);
+				previous.setNext(newNode);
+			}
+
+		}
+
+	}
+
+	public T delete(T data) {
+		T temp = null;
+
+		Node<T> previous = null;
+		Node<T> current = head;
+
+		while (!(current.getData().equals(data)) && current != null) {
+			previous = current;
+			current = current.getNext();
+		}
+
+		if (current == null)
+			return temp;
+		else if (previous == null) {
+			temp = head.getData();
+			head = head.getNext();
+		} else {
+			temp = current.getData();
+			previous.setNext(current.getNext());
+		}
+
+		return temp;
+	}
+
+	public T deleteRec(T data) {
+		return deleteRec(data, null, head);
+	}
+
+	public T deleteRec(T data, Node<T> previous, Node<T> current) {
+
+		if (current == null)
+			return null;
+
+		if (current.getData().compareTo(data) == 0) {
+			if (previous == null)
+				head = current.getNext();
+			else
+				previous.setNext(current.getNext());
+			return current.getData();
+		}
+		if (current.getData().compareTo(data) < 0)
+			return deleteRec(data, previous, current.getNext());
+		return null;
+	}
+
+	public T search(T data) {
+		Node current = head;
+		while (current != null) {
+			if (current.getData() == data)
+				return (T) current.getData();
+			current = current.getNext();
+
+		}
+		return null;
+	}
+
+	public T searchRec(T data) {
+		return searchRec(data, head);
+	}
+
+	private T searchRec(T data, Node current) {
+		if (current == null)
+			return null;
+		if (current.getData() == data)
+			return (T) current.getData();
+		return searchRec(data, current.getNext());
+
+	}
+
+//	public void insertAtHead(T data) {
+//		Node<T> newNode = new Node(data);
+//		if (head == null)
+//			head = newNode;
+//		else {
+//			newNode.setNext(head);
+//			newNode = head;
+//		}
+//
+//	}
+
+//	public void insertAtEnd(T data) {
+//		Node<T> newNode = new Node(data);   
+//
+//		if (head == null)
+//			head = newNode;
+//		else {
+//			Node<T> current = this.head;
+//			while (current.getNext() != null)
+//				current = current.getNext();
+//			current.setNext(newNode);
+//
+//		}
+//	}
+
+//	public int length(){
+//		int cnt =0;
+//		Node<T> current = this.head;
+//		while (current != null){
+//			cnt++;
+//			current = current.getNext();
+//		}
+//		return cnt;
+//	}
+
+	
+
+	public int length() {
+		return length(head, 0);
+	}
+
+	private int length(Node<T> node, int cnt) {
+		if (node == null)
+			return cnt;
+		return length(node.getNext(), ++cnt);
+	}
+
+	public void print() {
+		System.out.print("Head ---> ");
+		Node<T> current = this.head;
+		while (current != null) {
+			System.out.print(current.toString() + "--->");
+			current = current.getNext();
+
+		}
+		System.out.println("Null");
+	}
+
+	private String printRec(Node<T> current) {
+		if (current == null)
+			return "null";
+		return current.toString() + "----->" + printRec(current.getNext());
+
+	}
+
+	public String printRec() {
+		return printRec(head);
+	}
+
+}
